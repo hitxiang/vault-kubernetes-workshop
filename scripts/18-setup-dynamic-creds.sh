@@ -58,5 +58,11 @@ vault write auth/kubernetes/role/myapp-role \
   policies=default,myapp-kv-rw,myapp-db-r \
   ttl=15m
 
-# Confirm: Kubernetes Auth
+# Confirm: Kubernetes Auth using command
 vault write auth/kubernetes/login role=myapp-role jwt=${TR_ACCOUNT_TOKEN}
+
+# Confirm: Kubernetes Auth using API
+curl --insecure \
+  --request POST \
+  --data "{\"jwt\": \"${TR_ACCOUNT_TOKEN}\", \"role\": \"myapp-role\"}" \
+  ${VAULT_ADDR}/v1/auth/kubernetes/login
