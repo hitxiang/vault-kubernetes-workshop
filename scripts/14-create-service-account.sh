@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-kubectl create serviceaccount vault-auth
+kubectl apply -f k8s/app_namespace.yaml
+
+kubectl create serviceaccount vault-auth --namespace zack-app
 kubectl apply -f - <<EOH
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: role-tokenreview-binding
-  namespace: default
+  namespace: zack-app
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -16,5 +18,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: vault-auth
-  namespace: default
+  namespace: zack-app
 EOH

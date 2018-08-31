@@ -7,14 +7,16 @@ if [ -z "${GOOGLE_CLOUD_PROJECT}" ]; then
 fi
 
 ZONE="us-west1-b"
-
+CLUSTER_VERSION="1.10.6-gke.2"
 # Create a cluster with alpha features so we can do process namespace sharing
 gcloud container clusters create my-apps \
-  --cluster-version 1.10.2-gke.3 \
+  --cluster-version ${CLUSTER_VERSION} \
   --enable-cloud-logging \
   --enable-cloud-monitoring \
-  --machine-type n1-standard-2 \
-  --enable-kubernetes-alpha \
+  --machine-type custom-1-1536 \
   --num-nodes 3 \
   --scopes "cloud-platform" \
   --zone "${ZONE}"
+
+#  --machine-type n1-standard-2 \
+#  --enable-kubernetes-alpha \
