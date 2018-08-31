@@ -41,7 +41,7 @@ vault write database/roles/readonly \
   default_ttl="1h" \
   max_ttl="24h"
 
-# Get dynamic passwords
+# Confirm: Get dynamic passwords
 vault read database/creds/readonly
 
 # Create a new policy which allows generating these dynamic credentials
@@ -53,7 +53,10 @@ EOF
 
 # Update the Vault kubernetes auth mapping to include this new policy
 vault write auth/kubernetes/role/myapp-role \
-  bound_service_account_names=vault-vault \
+  bound_service_account_names=vault-auth \
   bound_service_account_namespaces=zack-app \
   policies=default,myapp-kv-rw,myapp-db-r \
   ttl=15m
+
+# Confirm: Kubernetes Auth
+vault write auth/kubernetes/login role=myapp-role jwt=${TR_ACCOUNT_TOKEN}
