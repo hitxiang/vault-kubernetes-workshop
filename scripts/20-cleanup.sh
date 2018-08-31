@@ -10,6 +10,9 @@ REGION="us-west1"
 ZONE="us-west1-b"
 SERVICE_ACCOUNT="vault-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com"
 
+# to confirm the default context
+kubectl config get-contexts
+
 kubectl delete pod --force --grace-period=0 kv-sidecar
 kubectl delete pod --force --grace-period=0 sa-sidecar
 

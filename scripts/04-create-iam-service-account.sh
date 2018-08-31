@@ -6,7 +6,7 @@ if [ -z "${GOOGLE_CLOUD_PROJECT}" ]; then
   exit 1
 fi
 
-ACCOUNT_NAME=vault-serve
+ACCOUNT_NAME=vault-server
 SERVICE_ACCOUNT="${ACCOUNT_NAME}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com"
 
 # Create the service account
