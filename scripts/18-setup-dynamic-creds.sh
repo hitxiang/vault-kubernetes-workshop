@@ -27,11 +27,19 @@ vault secrets enable database
 vault write database/config/my-cloudsql-db \
   plugin_name=mysql-database-plugin \
   connection_url="{{username}}:{{password}}@tcp(${INSTANCE_IP}:3306)/" \
-  allowed_roles="readonly" \
+  allowed_roles="readonly,another-user" \
   username="root" \
   password="my-password"
 
+## update allowed_roles
+# vault write database/config/my-cloudsql-db \
+#   plugin_name=mysql-database-plugin \
+#   allowed_roles="readonly,another-user,xxx-user"
+
 # Rotate the root cred
+# Once the root credential was rotated, only the Vault knows the new root password.
+# This is the same for all root database credentials given to Vault.
+# Therefore, you should create a separate superuser dedicated to the Vault usage which is not used for other purposes.
 vault write -f database/rotate-root/my-cloudsql-db
 
 # Create a role which will create a readonly user
@@ -41,8 +49,15 @@ vault write database/roles/readonly \
   default_ttl="1h" \
   max_ttl="24h"
 
+vault write database/roles/another-user \
+    db_name=my-cloudsql-db \
+    creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}'; GRANT SELECT ON *.* TO '{{name}}'@'%';" \
+    default_ttl="1h" \
+    max_ttl="24h"
+
 # Confirm: Get dynamic passwords
 vault read database/creds/readonly
+vault read database/creds/another-user
 
 # Create a new policy which allows generating these dynamic credentials
 vault policy write myapp-db-r -<<EOF
