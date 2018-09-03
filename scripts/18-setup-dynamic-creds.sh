@@ -10,14 +10,13 @@ fi
 gcloud sql instances create my-instance \
     --database-version MYSQL_5_7 \
     --tier db-f1-micro \
-    --region us-east1 \
+    --region ${REGION} \
     --authorized-networks 0.0.0.0/0
 
 INSTANCE_IP="$(gcloud sql instances describe my-instance --format 'value(ipAddresses[0].ipAddress)')"
 
 # Change password
-gcloud sql users set-password root \
-    --host % \
+gcloud sql users set-password root % \
     --instance my-instance \
     --password my-password
 
@@ -42,6 +41,9 @@ vault write database/roles/readonly \
   default_ttl="1h" \
   max_ttl="24h"
 
+# Confirm: Get dynamic passwords
+vault read database/creds/readonly
+
 # Create a new policy which allows generating these dynamic credentials
 vault policy write myapp-db-r -<<EOF
 path "database/creds/readonly" {
@@ -51,7 +53,16 @@ EOF
 
 # Update the Vault kubernetes auth mapping to include this new policy
 vault write auth/kubernetes/role/myapp-role \
-  bound_service_account_names=default \
-  bound_service_account_namespaces=default \
+  bound_service_account_names=vault-auth \
+  bound_service_account_namespaces=zack-app \
   policies=default,myapp-kv-rw,myapp-db-r \
   ttl=15m
+
+# Confirm: Kubernetes Auth using command
+vault write auth/kubernetes/login role=myapp-role jwt=${TR_ACCOUNT_TOKEN}
+
+# Confirm: Kubernetes Auth using API
+curl --insecure \
+  --request POST \
+  --data "{\"jwt\": \"${TR_ACCOUNT_TOKEN}\", \"role\": \"myapp-role\"}" \
+  ${VAULT_ADDR}/v1/auth/kubernetes/login

@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kv-sidecar
+  namespace: zack-app
   labels:
     app: kv-sidecar
 spec:

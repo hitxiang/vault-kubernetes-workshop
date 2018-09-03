@@ -24,6 +24,9 @@ export VAULT_TOKEN="$(gsutil cat "gs://${GCS_BUCKET}/root-token.enc" | \
 
 export PATH="${PATH}:${HOME}/bin"
 
+# ???
 alias vualt=vault
 
 exec $SHELL
+
+vault status

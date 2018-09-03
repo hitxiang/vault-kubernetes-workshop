@@ -15,11 +15,11 @@ LB_IP="$(gcloud compute addresses describe vault --region ${REGION} --format 'va
 DIR="$(pwd)/tls"
 
 # Get the name of the secret corresponding to the service account
-SECRET_NAME="$(kubectl get serviceaccount vault-auth \
+SECRET_NAME="$(kubectl get --namespace zack-app serviceaccount vault-auth \
   -o go-template='{{ (index .secrets 0).name }}')"
 
 # Get the actual token reviewer account
-TR_ACCOUNT_TOKEN="$(kubectl get secret ${SECRET_NAME} \
+TR_ACCOUNT_TOKEN="$(kubectl get --namespace zack-app secret ${SECRET_NAME} \
   -o go-template='{{ .data.token }}' | base64 --decode)"
 
 # Get the host for the cluster (IP address)
@@ -42,8 +42,10 @@ vault write auth/kubernetes/config \
 
 # Create a config map to store the vault address
 kubectl create configmap vault \
+  --namespace zack-app \
   --from-literal "vault_addr=https://${LB_IP}"
 
 # Create a secret for our CA
 kubectl create secret generic vault-tls \
+  --namespace zack-app \
   --from-file "${DIR}/ca.crt"

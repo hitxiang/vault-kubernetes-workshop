@@ -9,3 +9,4 @@ fi
 REGION="us-west1"
 
 gcloud compute addresses create vault --region "${REGION}"
+gcloud compute addresses list
