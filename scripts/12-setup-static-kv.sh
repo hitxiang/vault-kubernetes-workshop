@@ -15,4 +15,4 @@ EOH
 vault kv put secret/myapp/config \
   ttl="30s" \
   username="appuser" \
-  password="suP3rsec(et"
+  password='suP3rsec(et!'
