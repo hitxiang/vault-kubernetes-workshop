@@ -16,6 +16,8 @@ spec:
       labels:
         app: kv-sidecar
     spec:
+      serviceAccountName: vault-auth
+      automountServiceAccountToken: false
       volumes:
       - name: secrets
         emptyDir: {}
@@ -31,6 +33,8 @@ spec:
       # kubernetes auth method and puts the resulting token on the filesystem.
       - name: vault-authenticator
         image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
+        #image: golang
+        #command: ["sleep 10000000"]
         imagePullPolicy: Always
         volumeMounts:
         - name: vault-token

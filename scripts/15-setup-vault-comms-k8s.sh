@@ -45,6 +45,8 @@ kubectl create configmap vault \
   --namespace zack-app \
   --from-literal "vault_addr=https://${LB_IP}"
 
+kubectl describe configmap vault -n zack-app
+
 # Create a secret for our CA
 kubectl create secret generic vault-tls \
   --namespace zack-app \

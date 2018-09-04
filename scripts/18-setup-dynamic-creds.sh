@@ -64,6 +64,9 @@ vault policy write myapp-db-r -<<EOF
 path "database/creds/readonly" {
   capabilities = ["read"]
 }
+path "database/creds/another-user" {
+  capabilities = ["read"]
+}
 EOF
 
 # Update the Vault kubernetes auth mapping to include this new policy
