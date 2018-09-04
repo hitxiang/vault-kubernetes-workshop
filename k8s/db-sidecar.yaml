@@ -16,6 +16,7 @@ spec:
       labels:
         app: db-sidecar
     spec:
+      serviceAccountName: vault-auth
       shareProcessNamespace: true
       volumes:
       - name: secrets

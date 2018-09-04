@@ -17,7 +17,6 @@ spec:
         app: kv-sidecar
     spec:
       serviceAccountName: vault-auth
-      automountServiceAccountToken: false
       volumes:
       - name: secrets
         emptyDir: {}
